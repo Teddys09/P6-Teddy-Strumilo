@@ -10,7 +10,17 @@ const path = require('path');
 require('./mongo');
 //Controllers
 const { signupUser, loginUser } = require('./controllers/users');
-const { sauceHome, sauceCreate } = require('./controllers/sauces');
+const {
+  sauceHome,
+  sauceCreate,
+  sauceId,
+  sauceDelete,
+  sauceModify,
+  sendClientResponse,
+} = require('./controllers/sauces');
+
+const { saucePouce } = require('./controllers/pouce');
+
 //Middleware
 app.use(cors());
 app.use(express.json());
@@ -39,6 +49,16 @@ app.post('/api/auth/signup', signupUser);
 app.post('/api/auth/login', loginUser);
 app.get('/api/sauces', scanUser, sauceHome);
 app.post('/api/sauces', scanUser, upload.single('image'), sauceCreate);
+app.get('/api/sauces/:id', scanUser, sauceId);
+app.delete('/api/sauces/:id', scanUser, sauceDelete);
+app.put(
+  '/api/sauces/:id',
+  scanUser,
+  upload.single('image'),
+  sauceModify,
+  sendClientResponse
+);
+app.post('/api/sauces/:id/like', sauceHome, saucePouce, sendClientResponse);
 app.get('/', (req, res) => res.send('hello world'));
 
 //Listen

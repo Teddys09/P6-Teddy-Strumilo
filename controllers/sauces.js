@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { unlink } = require('fs');
+const { saucePouce } = require('./pouce');
 
 const sauceSchema = new mongoose.Schema({
   userId: String,
@@ -19,7 +21,9 @@ function sauceHome(req, res) {
   console.log('Token user is true , we are in sauceHome');
 
   // console.log('Token good !!', tokenVerify);
-  Sauce.find({}).then((sauces) => res.send(sauces));
+  Sauce.find({})
+    .then((sauces) => res.send(sauces))
+    .catch((err) => console.log(err));
   // res.send({ message: [{ sauce: 'sauce1' }, { sauce: 'sauce2' }] });
 }
 
@@ -43,8 +47,88 @@ function sauceCreate(req, res) {
   });
   sauce
     .save()
-    .then((res) => console.log('produit enregistré', res))
+    .then((resSuccess) => {
+      res.send({ message: resSuccess });
+      return console.log('produit enregistré', resSuccess);
+    })
     .catch((err) => console.log(err));
 }
 
-module.exports = { sauceHome, sauceCreate };
+function sauceId(req, res) {
+  const id = req.params.id;
+  Sauce.findById(id)
+    .then((sauce) => {
+      console.log(sauce);
+      res.send(sauce);
+    })
+    .catch((err) => console.log(err));
+}
+
+function sauceDelete(req, res) {
+  const id = req.params.id;
+  console.log(' Le idd', id);
+  Sauce.findByIdAndDelete(id)
+
+    .then((sauce) => {
+      imageDelete(sauce);
+      res.send({ message: sauce });
+    })
+    .catch((err) => res.status(500).send({ message: err }));
+}
+
+function imageDelete(sauce) {
+  const imageUrl = sauce.imageUrl;
+  console.log('image a DELETE', sauce.imageUrl);
+  const imageToDelete = sauce.imageUrl.split('/').at(-1);
+  unlink(`images/${imageToDelete}`, (err) => {
+    console.log(err);
+  });
+  console.log('Delete Picture', imageUrl);
+}
+
+function sauceModify(req, res) {
+  const id = req.params.id;
+
+  const imageUrl = req.file.destination + req.file.filename;
+  const imageAbsolute = req.protocol + '://' + req.get('host') + '/' + imageUrl;
+  const hasNewImage = imageAbsolute != null;
+  console.log(imageAbsolute);
+  const payload = makePayload(hasNewImage, req);
+
+  Sauce.findByIdAndUpdate(id, payload)
+    .then((dbResponse) => sendClientResponse(dbResponse, res))
+
+    .then((sauce) => imageDelete(sauce))
+
+    .catch((err) => console.error('PROBLEM UPDATING', err));
+}
+
+function makePayload(hasNewImage, req) {
+  const imageUrl = req.file.destination + req.file.filename;
+  const imageAbsolute = req.protocol + '://' + req.get('host') + '/' + imageUrl;
+  console.log('hasNewImage:', hasNewImage);
+  if (!hasNewImage) return req.body;
+  const payload = JSON.parse(req.body.sauce);
+  payload.imageUrl = imageAbsolute;
+  console.log('NOUVELLE IMAGE A GERER');
+  console.log('voici le payload:', payload);
+  return payload;
+}
+
+function sendClientResponse(product, res) {
+  if (product == null) {
+    console.log('NOTHING TO UPDATE');
+    return res.status(404).send({ message: 'Object not found in database' });
+  }
+  console.log('ALL GOOD, UPDATING:', product);
+  return Promise.resolve(res.status(200).send(product)).then(() => product);
+}
+module.exports = {
+  sauceHome,
+  sauceCreate,
+  sauceId,
+  sauceDelete,
+  sauceModify,
+  sendClientResponse,
+  saucePouce,
+};
