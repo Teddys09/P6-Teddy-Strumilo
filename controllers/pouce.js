@@ -4,7 +4,7 @@ const { sauceHome, sendClientResponse } = require('./sauces');
 
 function saucePouce(req, res) {
   const { like, userId } = req.body;
-  console.log('Poucesauce', req.body);
+  console.log('Poucesauce', req);
   if (![1, -1, 0].includes(like))
     return res.status(403).send({ message: 'Invalid like value' });
 

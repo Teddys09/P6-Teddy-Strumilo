@@ -56,7 +56,6 @@ function sauceId(req, res) {
   const id = req.params.id;
   Sauce.findById(id)
     .then((sauce) => {
-      console.log(sauce);
       res.send(sauce);
     })
     .catch((err) => console.log(err));
@@ -64,7 +63,7 @@ function sauceId(req, res) {
 
 function sauceDelete(req, res) {
   const id = req.params.id;
-  console.log(' Le idd', id);
+
   Sauce.findByIdAndDelete(id)
 
     .then((sauce) => {
@@ -81,7 +80,6 @@ function imageDelete(sauce) {
   unlink(`images/${imageToDelete}`, (err) => {
     console.log(err);
   });
-  console.log('Delete Picture', imageUrl);
 }
 
 function sauceModify(req, res) {
@@ -90,7 +88,7 @@ function sauceModify(req, res) {
   const imageUrl = req.file.destination + req.file.filename;
   const imageAbsolute = req.protocol + '://' + req.get('host') + '/' + imageUrl;
   const hasNewImage = imageAbsolute != null;
-  console.log(imageAbsolute);
+
   const payload = makePayload(hasNewImage, req);
 
   Sauce.findByIdAndUpdate(id, payload)
