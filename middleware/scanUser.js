@@ -1,7 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken');
 
 function scanUser(req, res, next) {
-  console.log(scanUser);
   const header = req.header('Authorization');
 
   if (header == null) return res.status(403).send({ message: 'Invalid' });

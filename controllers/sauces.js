@@ -20,11 +20,9 @@ const Sauce = mongoose.model('Sauce', sauceSchema);
 function sauceHome(req, res) {
   console.log('Token user is true , we are in sauceHome');
 
-  // console.log('Token good !!', tokenVerify);
   Sauce.find({})
     .then((sauces) => res.send(sauces))
     .catch((err) => console.log(err));
-  // res.send({ message: [{ sauce: 'sauce1' }, { sauce: 'sauce2' }] });
 }
 
 function sauceCreate(req, res) {
