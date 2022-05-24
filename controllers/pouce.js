@@ -1,22 +1,21 @@
-const mongoose = require('mongoose');
-
-const { sauceHome, sendClientResponse } = require('./sauces');
+const { sauceIdPouce, sendClientResponse } = require('./sauces');
 
 function saucePouce(req, res) {
   const { like, userId } = req.body;
-  console.log('Poucesauce', req);
+
   if (![1, -1, 0].includes(like))
     return res.status(403).send({ message: 'Invalid like value' });
 
-  sauceHome(req, res)
-    .then((log) => console.log(log))
+  sauceIdPouce(req, res)
     .then((sauce) => updatePouce(sauce, like, userId, res))
+
     .then((pr) => pr.save())
-    .then((prod) => sendClientResponse(prod, res))
+    .then((product) => sendClientResponse(product, res))
     .catch((err) => res.status(500).send(err));
 }
 
 function updatePouce(sauce, like, userId, res) {
+  console.log(sauce);
   if (like === 1 || like === -1) return incrementPouce(sauce, userId, like);
   return resetPouce(sauce, userId, res);
 }

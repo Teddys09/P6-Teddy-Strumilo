@@ -17,6 +17,7 @@ const {
   sauceDelete,
   sauceModify,
   sendClientResponse,
+  sauceIdPouce,
 } = require('./controllers/sauces');
 
 const { saucePouce } = require('./controllers/pouce');
@@ -24,7 +25,7 @@ const { saucePouce } = require('./controllers/pouce');
 //Middleware
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ entended: true }));
+//app.use(bodyParser.urlencoded({ entended: true }));
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 const multer = require('multer');
@@ -58,7 +59,7 @@ app.put(
   sauceModify,
   sendClientResponse
 );
-app.post('/api/sauces/:id/like', sauceHome, saucePouce, sendClientResponse);
+app.post('/api/sauces/:id/like', saucePouce);
 app.get('/', (req, res) => res.send('hello world'));
 
 //Listen

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { unlink } = require('fs');
-const { saucePouce } = require('./pouce');
+//const { saucePouce } = require('./pouce');
 
 const sauceSchema = new mongoose.Schema({
   userId: String,
@@ -59,6 +59,10 @@ function sauceId(req, res) {
       res.send(sauce);
     })
     .catch((err) => console.log(err));
+}
+function sauceIdPouce(req, res) {
+  const { id } = req.params;
+  return Sauce.findById(id);
 }
 
 function sauceDelete(req, res) {
@@ -126,5 +130,7 @@ module.exports = {
   sauceDelete,
   sauceModify,
   sendClientResponse,
-  saucePouce,
+  sauceId,
+  sauceIdPouce,
+  // saucePouce,
 };
