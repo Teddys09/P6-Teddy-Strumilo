@@ -87,33 +87,35 @@ function imageDelete(sauce) {
 }
 
 function sauceModify(req, res) {
-  const id = req.params.id;
+  const {
+    params: { id },
+  } = req;
 
-  const imageUrl = req.file.destination + req.file.filename;
-  const imageAbsolute = req.protocol + '://' + req.get('host') + '/' + imageUrl;
-  const hasNewImage = imageAbsolute != null;
+  const hasNewImage = req.file != null;
 
   const payload = makePayload(hasNewImage, req);
 
   Sauce.findByIdAndUpdate(id, payload)
     .then((dbResponse) => sendClientResponse(dbResponse, res))
 
-    .then((sauce) => imageDelete(sauce))
-
     .catch((err) => console.error('PROBLEM UPDATING', err));
 }
 
 function makePayload(hasNewImage, req) {
-  const imageUrl = req.file.destination + req.file.filename;
-  const imageAbsolute = req.protocol + '://' + req.get('host') + '/' + imageUrl;
   console.log('hasNewImage:', hasNewImage);
+  console.log('reqbody', req.body);
   if (!hasNewImage) return req.body;
   const payload = JSON.parse(req.body.sauce);
-  payload.imageUrl = imageAbsolute;
+  payload.imageUrl = makeImageUrl(req);
   console.log('NOUVELLE IMAGE A GERER');
   console.log('voici le payload:', payload);
   return payload;
 }
+function makeImageUrl(req) {
+  const imageUrl = req.file.destination + req.file.filename;
+  return req.protocol + '://' + req.get('host') + '/' + imageUrl;
+}
+// 'http://localhost:3000/images/1653557517023-3.bmp',
 
 function sendClientResponse(product, res) {
   if (product == null) {

@@ -17,7 +17,6 @@ const {
   sauceDelete,
   sauceModify,
   sendClientResponse,
-  sauceIdPouce,
 } = require('./controllers/sauces');
 
 const { saucePouce } = require('./controllers/pouce');

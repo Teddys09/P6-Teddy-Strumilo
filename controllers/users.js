@@ -1,4 +1,4 @@
-const User = require('../mongo').User;
+const { User } = require('../mongo');
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
@@ -34,7 +34,8 @@ async function loginUser(req, res) {
 
     const valablePassword = await bcrypt.compare(password, user.password);
     if (!valablePassword) {
-      res.status(403).send({ message: 'Mot de passe incorrect' });
+      res.status(401).send({ message: 'Mot de passe incorrect' });
+      return;
     }
 
     const token = createToken(email);
