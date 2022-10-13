@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// unlink pour supprimer les images
 const { unlink } = require('fs');
 //const { saucePouce } = require('./pouce');
 

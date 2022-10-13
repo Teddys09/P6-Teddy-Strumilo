@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const password = process.env.DB_PASSWORD;
 const username = process.env.DB_USER;
-const uri = `mongodb+srv://${username}:${password}@cluster0.4fq7t.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${username}:${password}@cluster0.vqbfzo3.mongodb.net/?retryWrites=true&w=majority`;
 mongoose
   .connect(uri)
   .then(() => console.log('Connected to mongo'))
